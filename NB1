@@ -1,0 +1,112 @@
+## Get location of data file in Google Drive
+# data_url = 'https://drive.google.com/uc?id=1MIkOcP2JY_foloYAR5-Y60YyRVbRhQMs'
+
+!wget -O ./spotify_data_urls.csv = 'https://storage.googleapis.com/inspirit-ai-data-bucket-1/Data/AI%20Scholars/Sessions%206%20-%2010%0(Projects)/Project%20-%20Music%20Recommendation/spotify_data_urls.csv'
+data_path = './spotify_data_urls.csv'
+
+# gdown.download(data_url, data_path , True)
+
+## Load in data
+data = pd.read_csv(data_path)
+basic_data = data[['Artist','Track','Year','url','Label']]
+
+
+
+print(basic_data['Track'][5], ": ", basic_data['url'][5])
+print(basic_data['Track'][1], ": ", basic_data['url'][1])
+
+
+
+print(data.columns.tolist()) # Run this!
+
+
+
+
+plt.hist(data["danceability"], color = 'b')
+
+plt.hist(data["energy"], color = 'b')
+
+plt.hist(data["key"], color = 'b')
+
+plt.hist(data["loudness"], color = 'b')
+plt.plot()
+
+
+
+fig, ((ax0, ax1), (ax2, ax3)) = plt.subplots(nrows=2, ncols=2)
+ax0.hist(data["danceability"], color = 'b')
+ax0.set_title('Danceability Histogram')
+
+# ax1.hist( , color = 'b') # uncomment these
+# ax1.set_title()
+
+# ax2.hist( , color = 'r')
+# ax2.set_title()
+
+# ax3.hist( , color = 'r')
+# ax3.set_title()
+
+fig.tight_layout()
+plt.show()
+
+
+
+
+quantitative = data[['key','loudness','Artist','Year','tempo','mode']] # FILL IN QUANTITATIVE FEATURES
+quantitative.head(10) # print the first 10
+
+
+
+qualitative = data[['danceability','energy','speechiness','acousticness','instrumentalness','liveness','valence']] # FILL IN FEATURES HERE
+display(qualitative.head(10))
+
+
+
+outputs = data[['Artist','Track','Label']]
+display(outputs.head(10))
+
+
+
+X = data[['danceability','energy','key','loudness','mode','speechiness','acousticness','instrumentalness','liveness','valence','tempo']]
+y = data[['Label']]
+print(X) 
+print(y)
+
+
+
+## Code for step 1
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+## Code for step 2
+lr= LogisticRegression()
+lr.fit(X_train,y_train)
+## Code for step 3
+lr.score(X_test,y_test)
+
+
+
+coef = lr.coef_
+pd.DataFrame(list(zip(X, coef[0])), columns=['feature', 'coef'])
+
+
+
+X_2 = data[["danceability", "instrumentalness"]] # Whatever features you'd like!
+y_2 = data[['Label']]
+## Code for step 1
+X_train, X_test, y_train, y_test = train_test_split(X_2, y_2, test_size=0.2, random_state=1)
+## Code for step 2
+lr= LogisticRegression()
+lr.fit(X_train,y_train)
+## Code for step 3
+lr.score(X_test,y_test)
+
+
+
+## Your Code here
+sum=0 
+for i in range (10):
+  X_train, X_test, y_train, y_test = train_test_split(X_2, y_2, test_size=0.2, random_state=1)
+  lr= LogisticRegression()
+  lr.fit(X_train,y_train)
+  lr.score(X_test,y_test)
+  sum=sum + lr.score(X_test,y_test)
+print(sum/10)
